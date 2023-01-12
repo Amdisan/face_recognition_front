@@ -1,0 +1,16 @@
+.nav_container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav_container p {
+  padding: 20px;
+  color: black;
+  font-size: 1.5rem;
+}
+
+.nav_container p:hover {
+  color: green;
+  cursor: pointer;
+  text-decoration: underline;
+}

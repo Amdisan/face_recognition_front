@@ -1,0 +1,15 @@
+.Ra_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Ra_container_name {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.Ra_container_number {
+  color: white;
+  font-size: 3rem;
+}

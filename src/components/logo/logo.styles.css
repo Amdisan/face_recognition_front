@@ -1,0 +1,18 @@
+.logo_container {
+  margin: 0 2rem 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tilt_inner {
+  display: flex;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+  background: linear-gradient(89deg, #ff5edf 0%, #04c8de 100%);
+  box-shadow: 2px 2px 5px #04c8de;
+  border: 2px solid #04c8de;
+}
+.tilt_inner img {
+  padding: 20px;
+}
