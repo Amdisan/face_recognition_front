@@ -31,6 +31,9 @@ const SignIn = ({ appState, setAppState }) => {
           navigate("/home");
           setAppState({ ...appState, isSignedIn: true, user: data });
         }
+      })
+      .catch((err) => {
+        throw err;
       });
   };
 

@@ -37,6 +37,9 @@ const Register = ({ appState, setAppState }) => {
           setAppState({ ...appState, isSignedIn: true, user: data });
           navigate("/home");
         }
+      })
+      .catch((err) => {
+        throw err;
       });
   };
 
