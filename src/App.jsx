@@ -9,8 +9,17 @@ import SignIn from "./components/signIn/signIn.component";
 import Home from "./routes/home/home.component";
 import Register from "./components/register/register.component";
 
+const initialState = {
+  input: "",
+  imgUrl: "",
+  box: {},
+  isSignedIn: false,
+  user: {},
+};
+
 const App = () => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [appState, setAppState] = useState(initialState);
+  console.log(appState, "app");
   return (
     <Fragment>
       <ParticlesBg bg={true} type={"cobweb"} color={"#ffffff"} num={300} />
@@ -18,12 +27,27 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Navigation isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />
+            <Navigation
+              appState={appState}
+              initialState={initialState}
+              setAppState={setAppState}
+            />
           }
         >
-          <Route path="home" element={<Home />} />
-          <Route index element={<SignIn setIsSignedIn={setIsSignedIn} />} />
-          <Route path="register" element={<Register />} />
+          {appState.isSignedIn && (
+            <Route
+              path="home"
+              element={<Home appState={appState} setAppState={setAppState} />}
+            />
+          )}
+          <Route
+            index
+            element={<SignIn appState={appState} setAppState={setAppState} />}
+          />
+          <Route
+            path="register"
+            element={<Register appState={appState} setAppState={setAppState} />}
+          />
         </Route>
       </Routes>
     </Fragment>

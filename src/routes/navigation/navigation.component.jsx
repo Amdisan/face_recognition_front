@@ -4,27 +4,29 @@ import Logo from "../../components/logo/logo.component";
 
 import "./navigation.styles.css";
 
-const Navigation = ({ isSignedIn, setIsSignedIn }) => {
+const Navigation = ({ appState, initialState, setAppState }) => {
   const navigate = useNavigate();
-  //console.log(isSignedIn);
+
   return (
     <Fragment>
       <nav className="nav_container">
-        {isSignedIn ? (
-          <p
-            onClick={() => {
-              navigate("/");
-              setIsSignedIn((prev) => (prev = false));
-            }}
-          >
-            Sign Out
-          </p>
+        {appState.isSignedIn ? (
+          <Fragment>
+            <p>{`Hi, ${appState.user.name}`}</p>
+            <p
+              onClick={() => {
+                navigate("/");
+                setAppState({ ...initialState });
+              }}
+            >
+              Sign Out
+            </p>
+          </Fragment>
         ) : (
           <Fragment>
             <p
               onClick={() => {
                 navigate("/");
-                setIsSignedIn((prev) => (prev = false));
               }}
             >
               Sign In
@@ -32,7 +34,6 @@ const Navigation = ({ isSignedIn, setIsSignedIn }) => {
             <p
               onClick={() => {
                 navigate("register");
-                setIsSignedIn((prev) => (prev = false));
               }}
             >
               Register

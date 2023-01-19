@@ -1,6 +1,45 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./register.styles.css";
 
-const Register = () => {
+const Register = ({ appState, setAppState }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmitReg = (event) => {
+    event.preventDefault();
+
+    fetch("http://localhost:3001/register", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.id) {
+          setAppState({ ...appState, isSignedIn: true, user: data });
+          navigate("/home");
+        }
+      });
+  };
+
   return (
     <article className="mw6 center br3 pa3 pa4-ns mv3 ba b--black-10 shadow-5">
       <main className="pa4 black-80">
@@ -12,6 +51,8 @@ const Register = () => {
                 Name
               </label>
               <input
+                onChange={handleNameChange}
+                value={name}
                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="name"
                 name="name"
@@ -23,6 +64,8 @@ const Register = () => {
                 Email
               </label>
               <input
+                onChange={handleEmailChange}
+                value={email}
                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
                 name="email-address"
@@ -34,6 +77,8 @@ const Register = () => {
                 Password
               </label>
               <input
+                onChange={handlePasswordChange}
+                value={password}
                 className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="password"
                 name="password"
@@ -46,6 +91,7 @@ const Register = () => {
               className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
               type="submit"
               value="Register"
+              onClick={handleSubmitReg}
             />
           </div>
         </form>

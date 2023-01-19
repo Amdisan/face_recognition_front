@@ -2,7 +2,7 @@ import "./faceRecognition.styles.css";
 
 const FaceRecognition = ({ imgUrl, imgRef, box }) => {
   const { topRow, leftCol, bottomRow, rightCol } = box;
-  console.log(box);
+
   return (
     <div className="face_recognition_container">
       <div className="img_container">

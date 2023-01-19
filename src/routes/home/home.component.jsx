@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useRef, Fragment } from "react";
 
 import { clarifyFetch } from "../../utility/clarify";
 
@@ -6,63 +6,57 @@ import ImageLinkForm from "../../components/imageLinkForm/imageLinkForm.componen
 import FaceRecognition from "../../components/faceRecognition/faceRecognition.component";
 import Rank from "../../components/rank/rank.component";
 
-const Home = () => {
-  const [input, setInput] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
-  const [box, setBox] = useState({});
-
+const Home = ({ appState, setAppState }) => {
+  console.log("home");
   const imgRef = useRef(null);
-
   const handleInputChange = (event) => {
-    setInput(() => event.target.value);
-  };
-
-  const calcFaceLocation = (data) => {
-    const clarifyFace =
-      data.outputs[0].data.regions[0].region_info.bounding_box;
-    const width = Number(imgRef.current.width);
-    const height = Number(imgRef.current.height);
-
-    //console.log(width, height);
-    //console.log(clarifyFace);
-
-    return {
-      topRow: clarifyFace.left_col * height,
-      leftCol: clarifyFace.left_col * width,
-      bottomRow: height - clarifyFace.bottom_row * height,
-      rightCol: width - clarifyFace.right_col * width,
-    };
-  };
-
-  const displayFaceBox = (box) => {
-    setBox(box);
-    //console.log(box);
+    setAppState({ ...appState, input: event.target.value });
   };
 
   const handleBtnSubmit = (event) => {
     event.preventDefault();
-    setImgUrl(input);
+    setAppState({ ...appState, imgUrl: appState.input });
   };
 
   useEffect(() => {
-    /*if (imgUrl && imgUrl.includes("jpg")) {
-      clarifyFetch(imgUrl, displayFaceBox, calcFaceLocation);
-      console.log("fetch");
-    }*/
-  }, [imgUrl]);
+    if (appState.imgUrl && appState.imgUrl.includes("jpg")) {
+      const fetchImgBox = clarifyFetch(appState.imgUrl, imgRef);
+
+      const fetchRank = fetch("http://localhost:3001/image", {
+        method: "put",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: appState.user.id,
+        }),
+      }).then((res) => res.json());
+
+      Promise.all([fetchImgBox, fetchRank])
+        .then(([box, rank]) => {
+          setAppState({
+            ...appState,
+            box: box,
+            user: { ...appState.user, entries: rank },
+          });
+        })
+        .catch((err) => {
+          throw err;
+        });
+      // console.log("fetch server clarify");
+    }
+  }, [appState.imgUrl]);
 
   return (
     <Fragment>
-      <Rank />
+      <Rank appState={appState} />
       <ImageLinkForm
         onInputChange={handleInputChange}
         onBtnSubmit={handleBtnSubmit}
-        input={input}
+        input={appState.input}
       />
       <FaceRecognition
-        imgUrl={imgUrl}
+        imgUrl={appState.imgUrl}
         imgRef={(el) => (imgRef.current = el)}
-        box={box}
+        box={appState.box}
       />
     </Fragment>
   );

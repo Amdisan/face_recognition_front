@@ -6,11 +6,7 @@ const APP_ID = "face_recognition";
 const MODEL_ID = "face-detection";
 const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
 
-export const clarifyFetch = async (
-  imgUrl,
-  displayFaceBox,
-  calcFaceLocation
-) => {
+export const clarifyFetch = async (imgUrl, imgRef) => {
   const raw = JSON.stringify({
     user_app_id: {
       user_id: USER_ID,
@@ -50,8 +46,17 @@ export const clarifyFetch = async (
     );
 
     const data = await response.json();
+    const clarifyFace =
+      data.outputs[0].data.regions[0].region_info.bounding_box;
+    const width = Number(imgRef.current.width);
+    const height = Number(imgRef.current.height);
 
-    displayFaceBox(calcFaceLocation(data));
+    return {
+      topRow: clarifyFace.left_col * height,
+      leftCol: clarifyFace.left_col * width,
+      bottomRow: height - clarifyFace.bottom_row * height,
+      rightCol: width - clarifyFace.right_col * width,
+    };
   } catch (error) {
     console.log("error", error);
   }
