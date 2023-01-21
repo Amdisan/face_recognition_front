@@ -1,13 +1,12 @@
 import { useEffect, useRef, Fragment } from "react";
 
-import { clarifyFetch } from "../../utility/clarify";
+import { apiServer } from "../../urls/urls";
 
 import ImageLinkForm from "../../components/imageLinkForm/imageLinkForm.component";
 import FaceRecognition from "../../components/faceRecognition/faceRecognition.component";
 import Rank from "../../components/rank/rank.component";
 
 const Home = ({ appState, setAppState }) => {
-  console.log("home");
   const imgRef = useRef(null);
   const handleInputChange = (event) => {
     setAppState({ ...appState, input: event.target.value });
@@ -20,28 +19,37 @@ const Home = ({ appState, setAppState }) => {
 
   useEffect(() => {
     if (appState.imgUrl && appState.imgUrl.includes("jpg")) {
-      const fetchImgBox = clarifyFetch(appState.imgUrl, imgRef);
-
-      const fetchRank = fetch("http://localhost:3001/image", {
-        method: "put",
+      fetch(`${apiServer}image`, {
+        method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: appState.user.id,
+          imgUrl: appState.imgUrl,
         }),
-      }).then((res) => res.json());
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const [imgBox, entries] = data;
 
-      Promise.all([fetchImgBox, fetchRank])
-        .then(([box, rank]) => {
-          setAppState({
+          const width = Number(imgRef.current.width);
+          const height = Number(imgRef.current.height);
+
+          const box = {
+            topRow: imgBox.left_col * height,
+            leftCol: imgBox.left_col * width,
+            bottomRow: height - imgBox.bottom_row * height,
+            rightCol: width - imgBox.right_col * width,
+          };
+
+          return setAppState({
             ...appState,
             box: box,
-            user: { ...appState.user, entries: rank },
+            user: { ...appState.user, entries },
           });
         })
         .catch((err) => {
           throw err;
         });
-      // console.log("fetch server clarify");
     }
   }, [appState.imgUrl]);
 

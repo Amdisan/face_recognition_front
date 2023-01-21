@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { apiServer } from "../../urls/urls";
+
 import "./register.styles.css";
 
 const Register = ({ appState, setAppState }) => {
@@ -22,7 +24,7 @@ const Register = ({ appState, setAppState }) => {
   const handleSubmitReg = (event) => {
     event.preventDefault();
 
-    fetch("http://localhost:3001/register", {
+    fetch(`${apiServer}register`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

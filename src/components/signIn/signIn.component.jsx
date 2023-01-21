@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+import { apiServer } from "../../urls/urls";
+
 import "./signIn.styles.css";
 
 const SignIn = ({ appState, setAppState }) => {
@@ -17,7 +19,7 @@ const SignIn = ({ appState, setAppState }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3001/signin", {
+    fetch(`${apiServer}signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

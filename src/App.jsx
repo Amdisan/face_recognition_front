@@ -19,7 +19,7 @@ const initialState = {
 
 const App = () => {
   const [appState, setAppState] = useState(initialState);
-  console.log(appState, "app");
+
   return (
     <Fragment>
       <ParticlesBg bg={true} type={"cobweb"} color={"#ffffff"} num={300} />
